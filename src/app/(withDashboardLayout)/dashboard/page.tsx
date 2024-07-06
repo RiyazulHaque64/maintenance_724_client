@@ -1,5 +1,7 @@
+import Tiptap from "@/components/TextEditor/Tiptap";
+
 const DashboardPage = () => {
-  return <div>This is the dashboard page</div>;
+  return <Tiptap />;
 };
 
 export default DashboardPage;

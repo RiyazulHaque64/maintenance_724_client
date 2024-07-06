@@ -62,9 +62,10 @@ const CFileUploader = ({
             </Typography>
           )}
           {showInUI && value && (
-            <Box sx={{ marginTop: "20px" }}>
+            <Box sx={{ marginTop: "20px", overflow: "hidden" }}>
               <Image
-                width={300}
+                width={550}
+                height={300}
                 src={URL.createObjectURL(value)}
                 alt={fileName || "image"}
                 style={{ objectFit: "cover" }}

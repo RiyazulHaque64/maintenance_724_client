@@ -35,7 +35,6 @@ const LoginForm = () => {
     setLoading(true);
     try {
       const res = await login(values as TLoginCredential);
-      console.log(res);
       if (res?.success) {
         setError("");
         const token = res.data.accessToken;

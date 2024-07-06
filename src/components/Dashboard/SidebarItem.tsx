@@ -13,7 +13,7 @@ import { TNavbarItem } from "./SidebarItems";
 const SidebarItem = ({ item }: { item: TNavbarItem }) => {
   const linkPath = `/dashboard/${item.path}`;
   const pathName = usePathname();
-  console.log(linkPath, pathName);
+
   return (
     <Link href={linkPath} key={item.path} style={{ textDecoration: "none" }}>
       <ListItem

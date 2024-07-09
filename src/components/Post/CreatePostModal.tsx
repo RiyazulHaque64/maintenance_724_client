@@ -12,7 +12,7 @@ type TModalProps = {
 const CreatePostModal = ({ open, setOpen }: TModalProps) => {
   return (
     <Modal open={open} setOpen={setOpen} title="Create Post">
-      <CreatePostForm />
+      <CreatePostForm setOpen={setOpen} />
     </Modal>
   );
 };

@@ -6,18 +6,22 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import FormatStrikethroughIcon from "@mui/icons-material/FormatStrikethrough";
+import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
+import LinkIcon from "@mui/icons-material/Link";
+import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { FormControl, MenuItem, Select, Stack } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { grey, red } from "@mui/material/colors";
 import { Editor } from "@tiptap/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
-const Toolbar = ({ editor }: { editor: Editor | null }) => {
+const Toolbar = ({
+  editor,
+  isError,
+}: {
+  editor: Editor | null;
+  isError?: boolean;
+}) => {
   const [heading, setHeading] = useState("normal");
-
-  if (!editor) {
-    return null;
-  }
-
   const iconStyle = {
     cursor: "pointer",
     fontSize: "22px",
@@ -25,9 +29,35 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     "&:hover": { color: "primary.main" },
   };
 
-  function handleChange(event: React.ChangeEvent<{ value: unknown }>) {
-    const value = event.target.value;
-    console.log(value);
+  const setLink = useCallback(() => {
+    if (editor) {
+      const previousUrl = editor.getAttributes("link").href;
+      const url = window.prompt("URL", previousUrl);
+
+      // cancelled
+      if (url === null) {
+        return;
+      }
+
+      // empty
+      if (url === "") {
+        editor.chain().focus().extendMarkRange("link").unsetLink().run();
+
+        return;
+      }
+
+      // update link
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+    }
+  }, [editor]);
+
+  if (!editor) {
+    return null;
   }
 
   return (
@@ -36,7 +66,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
       alignItems="center"
       spacing={1}
       sx={{
-        border: `1px solid ${grey[400]}`,
+        border: `1px solid ${isError ? red[700] : grey[400]}`,
         px: "12px",
         py: "8px",
         borderRadius: "4px 4px 0px 0px",
@@ -60,6 +90,16 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
         sx={{
           ...iconStyle,
           color: editor.isActive("italic") ? "primary.main" : grey[600],
+        }}
+      />
+      <FormatUnderlinedIcon
+        onClick={(e) => {
+          e.preventDefault();
+          editor.chain().focus().toggleUnderline().run();
+        }}
+        sx={{
+          ...iconStyle,
+          color: editor.isActive("underline") ? "primary.main" : grey[600],
         }}
       />
       <FormatStrikethroughIcon
@@ -169,6 +209,18 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
           <MenuItem value="subheading">Subheading</MenuItem>
         </Select>
       </FormControl>
+
+      {editor.isActive("link") ? (
+        <LinkOffIcon
+          sx={{
+            ...iconStyle,
+            color: editor.isActive("link") ? "primary.main" : "",
+          }}
+          onClick={() => editor.chain().focus().unsetLink().run()}
+        />
+      ) : (
+        <LinkIcon onClick={setLink} sx={{ ...iconStyle }} />
+      )}
     </Stack>
   );
 };

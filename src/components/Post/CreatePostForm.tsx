@@ -29,6 +29,7 @@ const createPostValidationSchema = z.object({
 const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const handleSubmit = async (values: FieldValues) => {
     setLoading(true);
     const token = getFromLocalStorage(authKey);
@@ -52,6 +53,7 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
       setLoading(false);
     }
   };
+
   return (
     <>
       {error?.length > 0 && (

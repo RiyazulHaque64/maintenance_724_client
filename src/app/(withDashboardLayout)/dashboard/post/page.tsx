@@ -4,8 +4,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Box, InputAdornment, Stack, TextField } from "@mui/material";
 
 const page = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/post`);
+  const res = await fetch(`http://localhost:5001/api/post`, {
+    next: { tags: ["get-all-post"] },
+  });
   const allPost = await res.json();
+  console.log(allPost);
 
   return (
     <Box>

@@ -53,7 +53,7 @@ const PostTable = ({ data }: { data: any }) => {
       headerName: "Actions",
       width: 180,
       type: "actions",
-      renderCell: (params) => <PostActions {...{ params, rowId, setRowId }} />,
+      renderCell: (params) => <PostActions params={params} />,
     },
   ];
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { updatePublishedStatus } from "@/services/actions/post";
 import { getFromLocalStorage } from "@/utils/local-storage";
-import { Box } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box, Switch } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import htmlReactParser from "html-react-parser";
 import moment from "moment";
 import Image from "next/image";
+import { ChangeEvent } from "react";
 import { toast } from "sonner";
 import PostActions from "./PostActions";
 
@@ -19,22 +19,28 @@ const PostTable = ({ data }: { data: any }) => {
         throw new Error("You are unauthorized!");
       }
       if (params.field === "published") {
-        console.log({ agee: params.value });
-        const response = await updatePublishedStatus({
-          token,
-          id: params.id,
-          status: !params.value,
-        });
-        console.log(response);
-        if (response?.success) {
-          toast.success(response?.message);
-        } else {
-          toast.error(response?.message);
-        }
+        // const response = await updatePublishedStatus({
+        //   token,
+        //   id: params.id,
+        //   status: !params.value,
+        // });
+        // console.log(response);
+        // if (response?.success) {
+        //   toast.success(response?.message);
+        // } else {
+        //   toast.error(response?.message);
+        // }
       }
     } catch (error: any) {
       toast.error(error?.message || "Something went wrong!");
     }
+  };
+
+  const handlePublishedStatus = (
+    event: ChangeEvent<HTMLInputElement>,
+    params: GridRenderCellParams
+  ) => {
+    console.log({ event: event.target.checked });
   };
 
   const columns: GridColDef<typeof data.data>[] = [
@@ -66,7 +72,12 @@ const PostTable = ({ data }: { data: any }) => {
       headerName: "Published",
       width: 100,
       type: "boolean",
-      editable: true,
+      renderCell: (params: GridRenderCellParams) => (
+        <Switch
+          defaultChecked={params.row.published}
+          onChange={(event) => handlePublishedStatus(event, params)}
+        />
+      ),
     },
     {
       field: "createdAt",

@@ -1,12 +1,11 @@
-import TiptapEditor from "@/components/TextEditor/TiptapTest";
+import { Box, Switch } from "@mui/material";
 
-const ServicesPage = () => {
+const ServicePage = () => {
   return (
-    <>
-      <h2>Tiptap Test</h2>
-      <TiptapEditor />
-    </>
+    <Box>
+      <Switch />
+    </Box>
   );
 };
 
-export default ServicesPage;
+export default ServicePage;

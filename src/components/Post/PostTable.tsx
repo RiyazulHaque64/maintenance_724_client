@@ -1,15 +1,42 @@
 "use client";
 
+import { authKey } from "@/constants/auth";
+import { updatePublishedStatus } from "@/services/actions/post";
+import { getFromLocalStorage } from "@/utils/local-storage";
 import { Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import htmlReactParser from "html-react-parser";
 import moment from "moment";
 import Image from "next/image";
-import { useState } from "react";
+import { toast } from "sonner";
 import PostActions from "./PostActions";
 
 const PostTable = ({ data }: { data: any }) => {
-  const [rowId, setRowId] = useState("");
+  const handleCellEditStop = async (params: any) => {
+    try {
+      const token = getFromLocalStorage(authKey);
+      if (!token) {
+        throw new Error("You are unauthorized!");
+      }
+      if (params.field === "published") {
+        console.log({ agee: params.value });
+        const response = await updatePublishedStatus({
+          token,
+          id: params.id,
+          status: !params.value,
+        });
+        console.log(response);
+        if (response?.success) {
+          toast.success(response?.message);
+        } else {
+          toast.error(response?.message);
+        }
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong!");
+    }
+  };
+
   const columns: GridColDef<typeof data.data>[] = [
     {
       field: "thumbnail",
@@ -70,7 +97,7 @@ const PostTable = ({ data }: { data: any }) => {
           },
         }}
         pageSizeOptions={[5, 10, 15, 20]}
-        onCellEditStop={(params) => setRowId(params.id as string)}
+        onCellEditStop={handleCellEditStop}
       />
     </Box>
   );

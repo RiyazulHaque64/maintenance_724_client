@@ -1,12 +1,12 @@
 "use client";
 import { authKey } from "@/constants/auth";
+import { deletePost } from "@/services/actions/post";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { IconButton, Stack } from "@mui/material";
 import { green, indigo, red } from "@mui/material/colors";
-import { revalidateTag } from "next/cache";
 import { useState } from "react";
 import { toast } from "sonner";
 import ConfirmDialog from "../shared/ConfirmDialog";
@@ -23,26 +23,17 @@ const PostActions = ({ params }: TPostActionsProps) => {
     setLoading(true);
     try {
       const token = getFromLocalStorage(authKey);
-      console.log(token);
       if (!token) {
         throw new Error("You are unauthorized!");
       }
-      const res = await fetch(
-        `http://localhost:5001/api/post/soft-delete/${params.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      const resInfo = await res.json();
-      if (resInfo?.success) {
-        toast.success(resInfo?.message);
-        setLoading(false);
-        setIsOpen(false);
-        revalidateTag("get-all-post");
+      const response = await deletePost(token, params.id);
+      if (response?.success) {
+        toast.success(response?.message);
+      } else {
+        toast.error(response?.message);
       }
+      setLoading(false);
+      setIsOpen(false);
     } catch (error: any) {
       setLoading(false);
       setIsOpen(false);

@@ -11,6 +11,7 @@ type TBFileUploaderProps = {
   label?: string;
   sx?: SxProps;
   showInUI?: boolean;
+  previousImage?: string;
 };
 
 const CFileUploader = ({
@@ -18,6 +19,7 @@ const CFileUploader = ({
   label,
   sx,
   showInUI = false,
+  previousImage,
 }: TBFileUploaderProps) => {
   const [fileName, setFileName] = useState<string | undefined>("");
   const { control, formState } = useFormContext();
@@ -67,6 +69,17 @@ const CFileUploader = ({
                 width={550}
                 height={300}
                 src={URL.createObjectURL(value)}
+                alt={fileName || "image"}
+                style={{ objectFit: "cover" }}
+              />
+            </Box>
+          )}
+          {showInUI && !value && previousImage && (
+            <Box sx={{ marginTop: "20px", overflow: "hidden" }}>
+              <Image
+                width={550}
+                height={300}
+                src={previousImage}
                 alt={fileName || "image"}
                 style={{ objectFit: "cover" }}
               />

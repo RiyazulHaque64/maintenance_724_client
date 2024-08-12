@@ -1,7 +1,7 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { updatePublishedStatus } from "@/services/actions/post";
+import { updatePost } from "@/services/actions/post";
 import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { Box, Switch } from "@mui/material";
@@ -25,7 +25,7 @@ const PostTable = ({ data }: { data: any }) => {
       }
       if (params.field === "published") {
         const data = convertToFormData({ published: event.target.checked });
-        const response = await updatePublishedStatus({
+        const response = await updatePost({
           token,
           id: params.id as string,
           data,
@@ -44,11 +44,16 @@ const PostTable = ({ data }: { data: any }) => {
 
   const columns: GridColDef<typeof data.data>[] = [
     {
-      field: "thumbnail",
+      field: "thumbnail.path",
       headerName: "Image",
       width: 150,
       renderCell: ({ row }) => (
-        <Image src={row.thumbnail} alt="Post Image" width={140} height={100} />
+        <Image
+          src={row.thumbnail.path}
+          alt="Post Image"
+          width={140}
+          height={100}
+        />
       ),
       sortable: false,
       filterable: false,

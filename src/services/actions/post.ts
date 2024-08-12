@@ -22,7 +22,7 @@ export const createPost = async (token: string, data: FormData) => {
   }
 };
 
-export const updatePublishedStatus = async ({
+export const updatePost = async ({
   token,
   id,
   data,

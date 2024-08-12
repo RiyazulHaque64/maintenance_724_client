@@ -20,7 +20,13 @@ const EditActions = ({ params }: TEditActionsProps) => {
       >
         <DriveFileRenameOutlineIcon />
       </IconButton>
-      <PostModal open={open} setOpen={setOpen} editMode={true} />
+      <PostModal
+        open={open}
+        setOpen={setOpen}
+        editMode={true}
+        title="Edit Post"
+        data={params.row}
+      />
     </>
   );
 };

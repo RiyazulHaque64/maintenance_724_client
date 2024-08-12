@@ -1,7 +1,7 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { createPost } from "@/services/actions/post";
+import { updatePost } from "@/services/actions/post";
 import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,15 +18,19 @@ import CTextInput from "../Form/CTextInput";
 
 type TCreatePostFormProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
+  data: Record<string, any>;
 };
 
-const createPostValidationSchema = z.object({
+const editPostValidationSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   content: z.string().min(1, { message: "Content is required" }),
-  file: z.instanceof(File, { message: "Featured image is required" }),
+  file: z
+    .instanceof(File, { message: "Featured image is required" })
+    .optional(),
 });
 
-const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
+const EditPostForm = ({ setOpen, data }: TCreatePostFormProps) => {
+  //   console.log(data);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,8 +42,9 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
         setLoading(false);
         throw new Error("You are unauthorized!");
       }
+      console.log(values);
       const convertedData = convertToFormData(values);
-      const res = await createPost(token, convertedData);
+      const res = await updatePost({ token, id: data.id, data: convertedData });
       if (res?.success) {
         toast.success(res?.message);
         setLoading(false);
@@ -64,10 +69,10 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          title: "",
-          content: "",
+          title: data.title,
+          content: data.content,
         }}
-        resolver={zodResolver(createPostValidationSchema)}
+        resolver={zodResolver(editPostValidationSchema)}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -77,7 +82,12 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
             <CTextEditor name="content" placeholder="Details..." />
           </Grid>
           <Grid item xs={12}>
-            <CFileUploader name="file" label="Featured Image" showInUI={true} />
+            <CFileUploader
+              name="file"
+              label="Featured Image"
+              showInUI={true}
+              previousImage={data?.thumbnail?.path}
+            />
           </Grid>
         </Grid>
         <Stack
@@ -99,7 +109,7 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
             loading={loading}
             disabled={loading}
           >
-            Post
+            Update
           </LoadingButton>
         </Stack>
       </CForm>
@@ -107,4 +117,4 @@ const CreatePostForm = ({ setOpen }: TCreatePostFormProps) => {
   );
 };
 
-export default CreatePostForm;
+export default EditPostForm;

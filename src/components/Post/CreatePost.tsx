@@ -9,7 +9,7 @@ const CreatePost = () => {
   return (
     <>
       <Button onClick={() => setOpen(true)}>Create Post</Button>
-      <PostModal open={open} setOpen={setOpen} />
+      <PostModal open={open} setOpen={setOpen} title="Create Post" />
     </>
   );
 };

@@ -2,14 +2,14 @@
 
 import { Button } from "@mui/material";
 import { useState } from "react";
-import CreatePostModal from "./CreatePostModal";
+import PostModal from "./PostModal";
 
 const CreatePost = () => {
   const [open, setOpen] = useState<boolean>(false);
   return (
     <>
       <Button onClick={() => setOpen(true)}>Create Post</Button>
-      <CreatePostModal open={open} setOpen={setOpen} />
+      <PostModal open={open} setOpen={setOpen} />
     </>
   );
 };

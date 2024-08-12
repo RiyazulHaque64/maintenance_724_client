@@ -7,14 +7,15 @@ import CreatePostForm from "./CreatePostForm";
 type TModalProps = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  editMode?: boolean;
 };
 
-const CreatePostModal = ({ open, setOpen }: TModalProps) => {
+const PostModal = ({ open, setOpen, editMode = false }: TModalProps) => {
   return (
     <Modal open={open} setOpen={setOpen} title="Create Post">
-      <CreatePostForm setOpen={setOpen} />
+      {editMode ? <>Edit Koro</> : <CreatePostForm setOpen={setOpen} />}
     </Modal>
   );
 };
 
-export default CreatePostModal;
+export default PostModal;

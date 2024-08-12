@@ -1,6 +1,8 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
+import { updatePublishedStatus } from "@/services/actions/post";
+import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { Box, Switch } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -12,35 +14,32 @@ import { toast } from "sonner";
 import PostActions from "./PostActions";
 
 const PostTable = ({ data }: { data: any }) => {
-  const handleCellEditStop = async (params: any) => {
+  const handlePublishedStatus = async (
+    event: ChangeEvent<HTMLInputElement>,
+    params: GridRenderCellParams
+  ) => {
     try {
       const token = getFromLocalStorage(authKey);
       if (!token) {
         throw new Error("You are unauthorized!");
       }
       if (params.field === "published") {
-        // const response = await updatePublishedStatus({
-        //   token,
-        //   id: params.id,
-        //   status: !params.value,
-        // });
-        // console.log(response);
-        // if (response?.success) {
-        //   toast.success(response?.message);
-        // } else {
-        //   toast.error(response?.message);
-        // }
+        const data = convertToFormData({ published: event.target.checked });
+        const response = await updatePublishedStatus({
+          token,
+          id: params.id as string,
+          data,
+        });
+        console.log(response);
+        if (response?.success) {
+          toast.success(response?.message);
+        } else {
+          toast.error(response?.message);
+        }
       }
     } catch (error: any) {
       toast.error(error?.message || "Something went wrong!");
     }
-  };
-
-  const handlePublishedStatus = (
-    event: ChangeEvent<HTMLInputElement>,
-    params: GridRenderCellParams
-  ) => {
-    console.log({ event: event.target.checked });
   };
 
   const columns: GridColDef<typeof data.data>[] = [
@@ -74,7 +73,7 @@ const PostTable = ({ data }: { data: any }) => {
       type: "boolean",
       renderCell: (params: GridRenderCellParams) => (
         <Switch
-          defaultChecked={params.row.published}
+          checked={params.row.published}
           onChange={(event) => handlePublishedStatus(event, params)}
         />
       ),
@@ -108,7 +107,6 @@ const PostTable = ({ data }: { data: any }) => {
           },
         }}
         pageSizeOptions={[5, 10, 15, 20]}
-        onCellEditStop={handleCellEditStop}
       />
     </Box>
   );

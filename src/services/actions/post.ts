@@ -25,27 +25,27 @@ export const createPost = async (token: string, data: FormData) => {
 export const updatePublishedStatus = async ({
   token,
   id,
-  status,
+  data,
 }: {
   token: string;
   id: string;
-  status: boolean;
+  data: FormData;
 }) => {
   try {
-    console.log(status, id);
     const res = await fetch(`http://localhost:5001/api/post/update/${id}`, {
       method: "PATCH",
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ published: status }),
+      cache: "no-store",
+      body: data,
     });
     if (!res.ok) {
       throw new Error("Something went wrong!");
     }
-    const newPost = await res.json();
+    const updatedPost = await res.json();
     revalidateTag("posts");
-    return newPost;
+    return updatedPost;
   } catch (error) {
     throw new Error("Something went wrong!");
   }

@@ -1,3 +1,4 @@
+"use client";
 import CreatePost from "@/components/Post/CreatePost";
 import PostTable from "@/components/Post/PostTable";
 import SearchIcon from "@mui/icons-material/Search";
@@ -8,19 +9,48 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
-const page = async () => {
-  const res = await fetch("http://localhost:5001/api/post", {
-    next: {
-      tags: ["posts"],
-    },
-  });
-  const allPost = await res.json();
+const PostPage = () => {
+  const [rows, setRows] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(0);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async (page: number, pageSize: number) => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:5001/api/post?page=${page + 1}&limit=${pageSize}`,
+        {
+          next: {
+            tags: ["posts"],
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const result = await res.json();
+      console.log(result);
+      // setRows(data);
+      // setRowCount(meta.total); // Assuming your API returns a total count in meta
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
 
   return (
     <Box>
-      {allPost ? (
-        allPost.data?.length > 0 ? (
+      {rows ? (
+        rows?.length > 0 ? (
           <>
             {" "}
             <Stack
@@ -42,7 +72,7 @@ const page = async () => {
                 }}
               />
             </Stack>
-            <PostTable data={allPost} />
+            <PostTable data={rows} />
           </>
         ) : (
           <Stack
@@ -63,4 +93,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default PostPage;

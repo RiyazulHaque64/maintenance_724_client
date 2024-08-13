@@ -21,7 +21,7 @@ const CFileUploader = ({
   showInUI = false,
   previousImage,
 }: TBFileUploaderProps) => {
-  const [fileName, setFileName] = useState<string | undefined>("");
+  const [file, setFile] = useState<File | undefined>(undefined);
   const { control, formState } = useFormContext();
   const isError = formState.errors[name] !== undefined;
   const errorMessage: string = (formState.errors[name]?.message ||
@@ -43,13 +43,13 @@ const CFileUploader = ({
             sx={{ ...sx }}
             color={isError ? "error" : "primary"}
           >
-            {fileName?.length ? fileName : label}
+            {file?.name?.length ? file?.name : label}
             <input
               {...field}
               value={value?.fileName}
               onChange={(e) => {
                 onChange((e.target as HTMLInputElement).files?.[0]);
-                setFileName((e.target as HTMLInputElement).files?.[0]?.name);
+                setFile((e.target as HTMLInputElement).files?.[0]);
               }}
               type="file"
               style={{ display: "none" }}
@@ -63,24 +63,24 @@ const CFileUploader = ({
               {errorMessage}
             </Typography>
           )}
-          {showInUI && value && (
+          {showInUI && file && (
             <Box sx={{ marginTop: "20px", overflow: "hidden" }}>
               <Image
                 width={550}
                 height={300}
-                src={URL.createObjectURL(value)}
-                alt={fileName || "image"}
+                src={URL.createObjectURL(file)}
+                alt={file?.name || "image"}
                 style={{ objectFit: "cover" }}
               />
             </Box>
           )}
-          {showInUI && !value && previousImage && (
+          {showInUI && !file && previousImage && (
             <Box sx={{ marginTop: "20px", overflow: "hidden" }}>
               <Image
                 width={550}
                 height={300}
                 src={previousImage}
-                alt={fileName || "image"}
+                alt={"image"}
                 style={{ objectFit: "cover" }}
               />
             </Box>

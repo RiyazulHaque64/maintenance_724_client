@@ -4,6 +4,7 @@ import { authKey } from "@/constants/auth";
 import { updatePost } from "@/services/actions/post";
 import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
+import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
 import { Box, Switch } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import htmlReactParser from "html-react-parser";
@@ -46,14 +47,25 @@ const PostTable = ({ data }: { data: any }) => {
       field: "thumbnail.path",
       headerName: "Image",
       width: 150,
-      renderCell: ({ row }) => (
-        <Image
-          src={row.thumbnail.path}
-          alt="Post Image"
-          width={140}
-          height={100}
-        />
-      ),
+      renderCell: ({ row }) =>
+        row.thumbnail ? (
+          <Image
+            src={row.thumbnail.path}
+            alt="Post Image"
+            width={140}
+            height={100}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <ImageOutlinedIcon />
+          </Box>
+        ),
       sortable: false,
       filterable: false,
     },
@@ -101,6 +113,7 @@ const PostTable = ({ data }: { data: any }) => {
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
+        autoHeight
         rows={data?.data}
         columns={columns}
         initialState={{

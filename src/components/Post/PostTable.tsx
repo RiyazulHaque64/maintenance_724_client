@@ -30,9 +30,8 @@ const PostTable = ({ data }: { data: any }) => {
           id: params.id as string,
           data,
         });
-        console.log(response);
         if (response?.success) {
-          toast.success(response?.message);
+          toast.success("Successfully updated the published status!");
         } else {
           toast.error(response?.message);
         }

@@ -38,6 +38,7 @@ const AddServiceForm = ({ setOpen }: TAddServiceFormProps) => {
         setLoading(false);
         throw new Error("You are unauthorized!");
       }
+      console.log(values);
       const convertedData = convertToFormData(values);
       const res = await addService(token, convertedData);
       if (res?.success) {

@@ -39,7 +39,6 @@ const EditServiceForm = ({ setOpen, data }: TEditServiceFormProps) => {
         setLoading(false);
         throw new Error("You are unauthorized!");
       }
-      console.log(values);
       const convertedData = convertToFormData(values);
       const res = await updateService({
         token,
@@ -87,7 +86,7 @@ const EditServiceForm = ({ setOpen, data }: TEditServiceFormProps) => {
               name="file"
               label="Service Icon"
               showInUI={true}
-              previousImage={data?.icon}
+              previousImage={data?.icon?.path}
             />
           </Grid>
         </Grid>

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const createPost = async (token: string, data: FormData) => {
   try {
@@ -15,7 +15,7 @@ export const createPost = async (token: string, data: FormData) => {
       throw new Error("Something went wrong!");
     }
     const newPost = await res.json();
-    revalidateTag("posts");
+    revalidatePath("/dashboard/post");
     return newPost;
   } catch (error) {
     throw new Error("Something went wrong!");
@@ -37,14 +37,13 @@ export const updatePost = async ({
       headers: {
         Authorization: token,
       },
-      cache: "no-store",
       body: data,
     });
     if (!res.ok) {
       throw new Error("Something went wrong!");
     }
     const updatedPost = await res.json();
-    revalidateTag("posts");
+    revalidatePath("/dashboard/post");
     return updatedPost;
   } catch (error) {
     throw new Error("Something went wrong!");

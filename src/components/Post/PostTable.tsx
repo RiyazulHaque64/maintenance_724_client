@@ -114,7 +114,7 @@ const PostTable = ({ data }: { data: any }) => {
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
         autoHeight
-        rows={data?.data}
+        rows={data}
         columns={columns}
         initialState={{
           pagination: {

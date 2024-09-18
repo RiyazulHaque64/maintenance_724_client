@@ -10,12 +10,9 @@ import {
 } from "@mui/material";
 
 const ServicesPage = async () => {
-  const res = await fetch("http://localhost:5001/api/service", {
-    next: {
-      tags: ["services"],
-    },
-  });
+  const res = await fetch("http://localhost:5001/api/service");
   const allServices = await res.json();
+
   return (
     <Box>
       {allServices ? (

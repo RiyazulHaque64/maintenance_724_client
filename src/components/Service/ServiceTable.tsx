@@ -10,11 +10,16 @@ import ServiceActions from "./ServiceActions";
 const ServiceTable = ({ data }: { data: any }) => {
   const columns: GridColDef<typeof data.data>[] = [
     {
-      field: "icon",
+      field: "icon.path",
       headerName: "Icon",
       width: 150,
       renderCell: ({ row }) => (
-        <Image src={row.icon} alt="Service Icon" width={140} height={100} />
+        <Image
+          src={row.icon.path}
+          alt="Service Icon"
+          width={140}
+          height={100}
+        />
       ),
       sortable: false,
       filterable: false,

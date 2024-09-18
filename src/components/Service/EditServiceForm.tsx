@@ -1,7 +1,7 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { updatePost } from "@/services/actions/post";
+import { updateService } from "@/services/actions/service";
 import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,21 +16,18 @@ import CForm from "../Form/CForm";
 import CTextEditor from "../Form/CTextEditor";
 import CTextInput from "../Form/CTextInput";
 
-type TCreatePostFormProps = {
+type TEditServiceFormProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   data: Record<string, any>;
 };
 
-const editPostValidationSchema = z.object({
+const editServiceValidationSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
-  content: z.string().min(1, { message: "Content is required" }),
-  file: z
-    .instanceof(File, { message: "Featured image is required" })
-    .optional(),
+  description: z.string().min(1, { message: "Description is required" }),
+  file: z.instanceof(File, { message: "Service icon is required" }).optional(),
 });
 
-const EditServiceForm = ({ setOpen, data }: TCreatePostFormProps) => {
-  //   console.log(data);
+const EditServiceForm = ({ setOpen, data }: TEditServiceFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,7 +41,11 @@ const EditServiceForm = ({ setOpen, data }: TCreatePostFormProps) => {
       }
       console.log(values);
       const convertedData = convertToFormData(values);
-      const res = await updatePost({ token, id: data.id, data: convertedData });
+      const res = await updateService({
+        token,
+        id: data.id,
+        data: convertedData,
+      });
       if (res?.success) {
         toast.success(res?.message);
         setLoading(false);
@@ -70,23 +71,23 @@ const EditServiceForm = ({ setOpen, data }: TCreatePostFormProps) => {
         onSubmit={handleSubmit}
         defaultValues={{
           title: data.title,
-          content: data.content,
+          description: data.description,
         }}
-        resolver={zodResolver(editPostValidationSchema)}
+        resolver={zodResolver(editServiceValidationSchema)}
       >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <CTextInput name="title" placeholder="Title" fullWidth={true} />
           </Grid>
           <Grid item xs={12}>
-            <CTextEditor name="content" placeholder="Details..." />
+            <CTextEditor name="description" placeholder="Details..." />
           </Grid>
           <Grid item xs={12}>
             <CFileUploader
               name="file"
-              label="Featured Image"
+              label="Service Icon"
               showInUI={true}
-              previousImage={data?.thumbnail?.path}
+              previousImage={data?.icon}
             />
           </Grid>
         </Grid>

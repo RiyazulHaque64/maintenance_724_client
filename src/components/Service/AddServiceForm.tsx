@@ -22,8 +22,8 @@ type TAddServiceFormProps = {
 
 const addServiceValidationSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
-  description: z.string().min(1, { message: "Content is required" }),
-  file: z.instanceof(File, { message: "Featured image is required" }),
+  description: z.string().min(1, { message: "Description is required" }),
+  file: z.instanceof(File, { message: "Service icon is required" }),
 });
 
 const AddServiceForm = ({ setOpen }: TAddServiceFormProps) => {

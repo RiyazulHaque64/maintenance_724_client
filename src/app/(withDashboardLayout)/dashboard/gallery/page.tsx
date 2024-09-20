@@ -1,5 +1,5 @@
 import AddImages from "@/components/gallery/AddImages";
-import CreatePost from "@/components/Post/CreatePost";
+import GalleryGrid from "@/components/gallery/GalleryGrid";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -25,7 +25,7 @@ const PostPage = async () => {
               alignItems="center"
               sx={{ mb: "20px" }}
             >
-              <CreatePost />
+              <AddImages />
               <TextField
                 size="small"
                 placeholder="Search"
@@ -38,6 +38,7 @@ const PostPage = async () => {
                 }}
               />
             </Stack>
+            <GalleryGrid data={galleryImages} />
           </>
         ) : (
           <Stack

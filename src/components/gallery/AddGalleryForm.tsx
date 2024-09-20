@@ -1,36 +1,36 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { createPost } from "@/services/actions/post";
+import { addImages } from "@/services/actions/gallery";
 import convertToFormData from "@/utils/convertToFormData";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Alert, Button, Grid, Stack } from "@mui/material";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import CFileUploader from "../Form/CFileUploader";
 import CForm from "../Form/CForm";
-import CTextEditor from "../Form/CTextEditor";
-import CTextInput from "../Form/CTextInput";
+import CMultipleFileUploader from "../Form/CMultipleFileUploader";
+import CSelectField from "../Form/CSelectField";
 
 type TAddGalleryFormProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-const createPostValidationSchema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
-  content: z.string().min(1, { message: "Content is required" }),
-  file: z.instanceof(File, { message: "Featured image is required" }),
+const addGalleryValidationSchema = z.object({
+  category: z.string().min(1, { message: "Category is required" }),
+  file: z.array(z.instanceof(File, { message: "At least one image required" })),
 });
 
 const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [categories, setCategories] = useState([]);
 
   const handleSubmit = async (values: FieldValues) => {
+    console.log(values);
     setLoading(true);
     const token = getFromLocalStorage(authKey);
     try {
@@ -39,7 +39,7 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
         throw new Error("You are unauthorized!");
       }
       const convertedData = convertToFormData(values);
-      const res = await createPost(token, convertedData);
+      const res = await addImages(token, convertedData);
       if (res?.success) {
         toast.success(res?.message);
         setLoading(false);
@@ -54,6 +54,15 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
     }
   };
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await fetch("http://localhost:5001/api/service");
+      const services = await res.json();
+      setCategories(services.data);
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <>
       {error?.length > 0 && (
@@ -64,20 +73,21 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          title: "",
-          content: "",
+          category: "",
         }}
-        resolver={zodResolver(createPostValidationSchema)}
+        resolver={zodResolver(addGalleryValidationSchema)}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ paddingTop: "5px" }}>
           <Grid item xs={12}>
-            <CTextInput name="title" placeholder="Title" fullWidth={true} />
+            <CSelectField
+              name="category"
+              label="Category"
+              items={categories}
+              fullWidth={true}
+            />
           </Grid>
           <Grid item xs={12}>
-            <CTextEditor name="content" placeholder="Details..." />
-          </Grid>
-          <Grid item xs={12}>
-            <CFileUploader name="file" label="Featured Image" showInUI={true} />
+            <CMultipleFileUploader name="file" />
           </Grid>
         </Grid>
         <Stack

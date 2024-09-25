@@ -1,8 +1,7 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { addImages } from "@/services/actions/gallery";
-import convertToFormData from "@/utils/convertToFormData";
+import { updateImageCategory } from "@/services/actions/gallery";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -12,10 +11,10 @@ import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import CForm from "../Form/CForm";
-import CMultipleFileUploader from "../Form/CMultipleFileUploader";
 import CSelectField from "../Form/CSelectField";
 
 type TAddGalleryFormProps = {
+  data: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -24,13 +23,12 @@ const addGalleryValidationSchema = z.object({
   file: z.array(z.instanceof(File, { message: "At least one image required" })),
 });
 
-const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
+const EditGalleryForm = ({ data, setOpen }: TAddGalleryFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState([]);
 
   const handleSubmit = async (values: FieldValues) => {
-    console.log(values);
     setLoading(true);
     const token = getFromLocalStorage(authKey);
     try {
@@ -38,8 +36,8 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
         setLoading(false);
         throw new Error("You are unauthorized!");
       }
-      const convertedData = convertToFormData(values);
-      const res = await addImages(token, convertedData);
+
+      const res = await updateImageCategory(token, data.id, { categoryId: "" });
       if (res?.success) {
         toast.success(res?.message);
         setLoading(false);
@@ -73,7 +71,7 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          categoryId: "",
+          categoryId: data.categoryId,
         }}
         resolver={zodResolver(addGalleryValidationSchema)}
       >
@@ -85,9 +83,6 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
               items={categories}
               fullWidth={true}
             />
-          </Grid>
-          <Grid item xs={12}>
-            <CMultipleFileUploader name="file" />
           </Grid>
         </Grid>
         <Stack
@@ -109,7 +104,7 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
             loading={loading}
             disabled={loading}
           >
-            Post
+            Save
           </LoadingButton>
         </Stack>
       </CForm>
@@ -117,4 +112,4 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
   );
 };
 
-export default AddGalleryForm;
+export default EditGalleryForm;

@@ -20,14 +20,14 @@ type TAddGalleryFormProps = {
 };
 
 const addGalleryValidationSchema = z.object({
-  category: z.string().min(1, { message: "Category is required" }),
+  serviceId: z.string().min(1, { message: "Service is required" }),
   file: z.array(z.instanceof(File, { message: "At least one image required" })),
 });
 
 const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [categories, setCategories] = useState([]);
+  const [services, setServices] = useState([]);
 
   const handleSubmit = async (values: FieldValues) => {
     console.log(values);
@@ -58,7 +58,7 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
     const fetchCategories = async () => {
       const res = await fetch("http://localhost:5001/api/service");
       const services = await res.json();
-      setCategories(services.data);
+      setServices(services.data);
     };
     fetchCategories();
   }, []);
@@ -73,16 +73,16 @@ const AddGalleryForm = ({ setOpen }: TAddGalleryFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          categoryId: "",
+          serviceId: "",
         }}
         resolver={zodResolver(addGalleryValidationSchema)}
       >
         <Grid container spacing={2} sx={{ paddingTop: "5px" }}>
           <Grid item xs={12}>
             <CSelectField
-              name="categoryId"
-              label="Category"
-              items={categories}
+              name="serviceId"
+              label="Service"
+              items={services}
               fullWidth={true}
             />
           </Grid>

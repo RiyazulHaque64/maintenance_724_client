@@ -1,7 +1,7 @@
 "use client";
 
 import { authKey } from "@/constants/auth";
-import { updateImageCategory } from "@/services/actions/gallery";
+import { updateImage } from "@/services/actions/gallery";
 import { getFromLocalStorage } from "@/utils/local-storage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -14,21 +14,22 @@ import CForm from "../Form/CForm";
 import CSelectField from "../Form/CSelectField";
 
 type TAddGalleryFormProps = {
-  data: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  data: Record<string, any>;
 };
 
-const addGalleryValidationSchema = z.object({
-  category: z.string().min(1, { message: "Category is required" }),
-  file: z.array(z.instanceof(File, { message: "At least one image required" })),
+const updateGalleryValidationSchema = z.object({
+  serviceId: z.string().min(1, { message: "Service is required" }),
 });
 
-const EditGalleryForm = ({ data, setOpen }: TAddGalleryFormProps) => {
+const EditGalleryForm = ({ setOpen, data }: TAddGalleryFormProps) => {
+  console.log(data);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [categories, setCategories] = useState([]);
+  const [services, setServices] = useState([]);
 
   const handleSubmit = async (values: FieldValues) => {
+    console.log(values);
     setLoading(true);
     const token = getFromLocalStorage(authKey);
     try {
@@ -36,8 +37,7 @@ const EditGalleryForm = ({ data, setOpen }: TAddGalleryFormProps) => {
         setLoading(false);
         throw new Error("You are unauthorized!");
       }
-
-      const res = await updateImageCategory(token, data.id, { categoryId: "" });
+      const res = await updateImage(token, data.id, values);
       if (res?.success) {
         toast.success(res?.message);
         setLoading(false);
@@ -56,7 +56,7 @@ const EditGalleryForm = ({ data, setOpen }: TAddGalleryFormProps) => {
     const fetchCategories = async () => {
       const res = await fetch("http://localhost:5001/api/service");
       const services = await res.json();
-      setCategories(services.data);
+      setServices(services.data);
     };
     fetchCategories();
   }, []);
@@ -71,16 +71,16 @@ const EditGalleryForm = ({ data, setOpen }: TAddGalleryFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          categoryId: data.categoryId,
+          serviceId: data.serviceId,
         }}
-        resolver={zodResolver(addGalleryValidationSchema)}
+        resolver={zodResolver(updateGalleryValidationSchema)}
       >
         <Grid container spacing={2} sx={{ paddingTop: "5px" }}>
           <Grid item xs={12}>
             <CSelectField
-              name="categoryId"
-              label="Category"
-              items={categories}
+              name="serviceId"
+              label="Service"
+              items={services}
               fullWidth={true}
             />
           </Grid>

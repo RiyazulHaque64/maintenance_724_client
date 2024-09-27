@@ -42,7 +42,7 @@ const ImageCard = ({ imageInfo }: { imageInfo: any }) => {
           }}
         >
           <Typography variant="h6" sx={{ color: grey[300], fontSize: "16px" }}>
-            {imageInfo.category.title}
+            {imageInfo.service.title}
           </Typography>
           <ImageActions imageInfo={imageInfo} />
         </Box>

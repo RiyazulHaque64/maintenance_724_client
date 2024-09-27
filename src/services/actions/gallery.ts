@@ -22,7 +22,7 @@ export const addImages = async (token: string, data: FormData) => {
   }
 };
 
-export const updateImageCategory = async (
+export const updateImage = async (
   token: string,
   id: string,
   data: Record<string, any>

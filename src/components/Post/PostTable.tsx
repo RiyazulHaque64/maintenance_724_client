@@ -49,12 +49,24 @@ const PostTable = ({ data }: { data: any }) => {
       width: 150,
       renderCell: ({ row }) =>
         row.thumbnail ? (
-          <Image
-            src={row.thumbnail.path}
-            alt="Post Image"
-            width={140}
-            height={100}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "10px",
+              position: "relative",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Image
+              fill
+              src={row.thumbnail.path}
+              alt="Post Image"
+              style={{ objectFit: "contain", padding: "10px" }}
+            />
+          </Box>
         ) : (
           <Box
             sx={{
@@ -113,6 +125,7 @@ const PostTable = ({ data }: { data: any }) => {
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
+        rowHeight={80}
         autoHeight
         rows={data}
         columns={columns}

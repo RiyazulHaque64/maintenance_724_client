@@ -14,12 +14,20 @@ const ServiceTable = ({ data }: { data: any }) => {
       headerName: "Icon",
       width: 150,
       renderCell: ({ row }) => (
-        <Image
-          src={row.icon.path}
-          alt="Service Icon"
-          width={140}
-          height={100}
-        />
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Image
+            fill
+            src={row.icon.path}
+            alt="Service Icon"
+            style={{ objectFit: "contain" }}
+          />
+        </Box>
       ),
       sortable: false,
       filterable: false,
@@ -56,6 +64,7 @@ const ServiceTable = ({ data }: { data: any }) => {
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
+        autoHeight
         rows={data?.data}
         columns={columns}
         initialState={{

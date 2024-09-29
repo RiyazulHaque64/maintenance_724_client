@@ -32,6 +32,7 @@ export const updateImage = async (
       method: "PATCH",
       headers: {
         Authorization: token,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });

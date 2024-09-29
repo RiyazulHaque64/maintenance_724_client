@@ -21,11 +21,13 @@ const SidebarItem = ({ item }: { item: TNavbarItem }) => {
         sx={{
           ...(linkPath === pathName
             ? {
+                background: "rgba(48, 79, 254, 0.07)",
                 borderRight: "3px solid #304ffe",
                 "& svg": { color: "primary.main" },
               }
             : {}),
           "&:hover": {
+            background: "rgba(48, 79, 254, 0.07)",
             borderRight: "3px solid #304ffe",
             "& svg": { color: "primary.main" },
           },

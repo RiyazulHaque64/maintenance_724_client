@@ -23,13 +23,11 @@ const updateGalleryValidationSchema = z.object({
 });
 
 const EditGalleryForm = ({ setOpen, data }: TAddGalleryFormProps) => {
-  console.log(data);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [services, setServices] = useState([]);
 
   const handleSubmit = async (values: FieldValues) => {
-    console.log(values);
     setLoading(true);
     const token = getFromLocalStorage(authKey);
     try {
@@ -71,7 +69,7 @@ const EditGalleryForm = ({ setOpen, data }: TAddGalleryFormProps) => {
       <CForm
         onSubmit={handleSubmit}
         defaultValues={{
-          serviceId: data.serviceId,
+          serviceId: "",
         }}
         resolver={zodResolver(updateGalleryValidationSchema)}
       >
